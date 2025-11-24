@@ -47,8 +47,15 @@ func (l *SmartEnergyManagementPs) WriteData(data *model.SmartEnergyManagementPsD
 	}
 
 	cmd := model.CmdType{
-		Function:                    util.Ptr(model.FunctionTypeSmartEnergyManagementPsData),
-		Filter:                      []model.FilterType{*model.NewFilterTypePartial()},
+		Function: util.Ptr(model.FunctionTypeSmartEnergyManagementPsData),
+		Filter: []model.FilterType{
+			*model.NewFilterTypePartial(),
+			model.FilterType{SmartEnergyManagementPsDataSelectors: &model.SmartEnergyManagementPsDataSelectorsType{
+				PowerSequenceDescription: &model.PowerSequenceDescriptionListDataSelectorsType{
+					SequenceId: []model.PowerSequenceIdType{0},
+				},
+			}},
+		},
 		SmartEnergyManagementPsData: data,
 	}
 
