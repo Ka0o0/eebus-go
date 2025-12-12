@@ -292,19 +292,18 @@ func (e *LPC) ConsumptionNominalMax(entity spineapi.EntityRemoteInterface) (floa
 	return data[0].Value.GetValue(), nil
 }
 
-// returns the characteristictype depending on the remote entities device devicetype
+// returns the characteristictype depending on the remote entities entitytype
 func (e *LPC) characteristicType(entity spineapi.EntityRemoteInterface) model.ElectricalConnectionCharacteristicTypeType {
-	// According to LPC V1.0 2.2, lines 400ff:
-	// - a HEMS provides contractual consumption nominal max
-	// - any other devices provides power consupmtion nominal max
+	// According to LPC V1.0 2.6.4, lines 666-669:
+	// - a CEM provides contractual consumption nominal max
+	// - any other entity provides power consupmtion nominal max
 	characteristic := model.ElectricalConnectionCharacteristicTypeTypePowerConsumptionNominalMax
 
-	if entity == nil || entity.Device() == nil {
+	if entity == nil {
 		return characteristic
 	}
 
-	deviceType := entity.Device().DeviceType()
-	if deviceType == nil || *deviceType == model.DeviceTypeTypeEnergyManagementSystem {
+	if entity.EntityType() == model.EntityTypeTypeCEM {
 		characteristic = model.ElectricalConnectionCharacteristicTypeTypeContractualConsumptionNominalMax
 	}
 
