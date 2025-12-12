@@ -160,6 +160,7 @@ func setupDevices(
 				DeviceAddress: &model.DeviceAddressType{
 					Device: util.Ptr(model.AddressDeviceType(remoteDeviceName)),
 				},
+				DeviceType: util.Ptr(model.DeviceTypeTypeChargingStation),
 			},
 		},
 		EntityInformation: []model.NodeManagementDetailedDiscoveryEntityInformationType{
