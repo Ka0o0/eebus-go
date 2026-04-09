@@ -199,10 +199,13 @@ func (h *controlbox) sendProductionLimit(entity spineapi.EntityRemoteInterface) 
 
 	fmt.Println("Sending a production limit in 5s...")
 	time.AfterFunc(time.Second*5, func() {
+		// NOTE: Per the LPP spec, APPL (Active Power Limit) values for production
+		// must be <= 0. The eebus-go stack does not transform positive values to
+		// negative values, so the caller must provide the correct sign.
 		limit := ucapi.LoadLimit{
 			Duration: time.Hour*1 + time.Minute*2 + time.Second*3,
 			IsActive: true,
-			Value:    100,
+			Value:    -100,
 		}
 
 		resultCB := func(msg model.ResultDataType) {
