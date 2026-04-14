@@ -49,7 +49,7 @@ type EgLPPInterface interface {
 	//   - entity: the entity of the e.g. EVSE
 	//
 	// return values:
-	//   - negative values or 0 are used for production
+	//   - positive values are used for production
 	FailsafeProductionActivePowerLimit(entity spineapi.EntityRemoteInterface) (float64, error)
 
 	// send new Failsafe Production Active Power Limit
