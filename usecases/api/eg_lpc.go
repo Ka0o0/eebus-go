@@ -65,8 +65,6 @@ type EgLPCInterface interface {
 	// parameters:
 	//   - entity: the entity of the e.g. EVSE
 	//
-	// return values:
-	//   - negative values are used for production
 	FailsafeDurationMinimum(entity spineapi.EntityRemoteInterface) (time.Duration, error)
 
 	// send new Failsafe Duration Minimum

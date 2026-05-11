@@ -46,6 +46,11 @@ func (e *LPP) ProductionLimit() (limit ucapi.LoadLimit, resultErr error) {
 	if value.TimePeriod != nil && value.TimePeriod.EndTime != nil {
 		if duration, err := value.TimePeriod.GetDuration(); err == nil {
 			limit.Duration = duration
+			if limit.Duration == 0 {
+				// according to EEBus UC Implementation Guideline for LPC v1.0.0 section 2.2 item 1
+				// no IG exists for LPP at the moment, we assume the same should be valid here as well
+				limit.IsActive = false
+			}
 		}
 	}
 

@@ -126,9 +126,12 @@ func (h *hems) run() {
 	_ = h.uccslpc.SetFailsafeConsumptionActivePowerLimit(4200, true)
 	_ = h.uccslpc.SetFailsafeDurationMinimum(2*time.Hour, true)
 
+	// NOTE: Per the LPP spec, APPL (Active Power Limit) values for production
+	// must be <= 0. The eebus-go stack does not transform positive values to
+	// negative values, so the caller must provide the correct sign.
 	_ = h.uccslpp.SetProductionNominalMax(10000)
 	_ = h.uccslpp.SetProductionLimit(ucapi.LoadLimit{
-		Value:        10000,
+		Value:        -10000,
 		IsChangeable: true,
 		IsActive:     false,
 	})
@@ -139,7 +142,7 @@ func (h *hems) run() {
 		os.Exit(0)
 	}
 
-	h.myService.RegisterRemoteSKI(remoteSki)
+	h.myService.RegisterRemoteSKI(remoteSki, "")
 
 	h.myService.Start()
 	// defer h.myService.Shutdown()

@@ -7,6 +7,7 @@ import (
 	features "github.com/enbility/eebus-go/features/client"
 	"github.com/enbility/eebus-go/features/server"
 	ucapi "github.com/enbility/eebus-go/usecases/api"
+	"github.com/enbility/eebus-go/usecases/internal"
 	"github.com/enbility/eebus-go/usecases/usecase"
 	"github.com/enbility/ship-go/logging"
 	spineapi "github.com/enbility/spine-go/api"
@@ -31,9 +32,11 @@ var _ ucapi.CsLPCInterface = (*LPC)(nil)
 // Add support for the Limitation of Power Consumption (LPC) use case
 // as a Controllable System actor
 //
-// Parameters:
-//   - localEntity: The local entity which should support the use case
-//   - eventCB: The callback to be called when an event is triggered (optional, can be nil)
+// Note: if the Monitoring of Power Consumption (MPC) or Monitoring of Grid Connection Point (MGCP) will be supported, add them first
+//
+//	Parameters:
+//	 - localEntity: The local entity which should support the use case
+//	 - eventCB: The callback to be called when an event is triggered (optional, can be nil)
 func NewLPC(localEntity spineapi.EntityLocalInterface, eventCB api.EntityEventCallback) *LPC {
 	validActorTypes := []model.UseCaseActorType{model.UseCaseActorTypeEnergyGuard}
 	validEntityTypes := []model.EntityTypeType{
@@ -182,11 +185,12 @@ func (e *LPC) AddFeatures() {
 	f.AddFunctionType(model.FunctionTypeLoadControlLimitListData, true, true)
 	_ = f.AddWriteApprovalCallback(e.loadControlWriteCB)
 
+	measurementId := internal.GetPowerTotalMeasurementId(e.LocalEntity)
 	newLimitDesc := model.LoadControlLimitDescriptionDataType{
 		LimitType:      util.Ptr(model.LoadControlLimitTypeTypeSignDependentAbsValueLimit),
 		LimitCategory:  util.Ptr(model.LoadControlCategoryTypeObligation),
 		LimitDirection: util.Ptr(model.EnergyDirectionTypeConsume),
-		MeasurementId:  util.Ptr(model.MeasurementIdType(0)), // This is a fake Measurement ID, as there is no Electrical Connection server defined, it can't provide any meaningful. But KEO requires this to be set :(
+		MeasurementId:  util.Ptr(measurementId),
 		Unit:           util.Ptr(model.UnitOfMeasurementTypeW),
 		ScopeType:      util.Ptr(model.ScopeTypeTypeActivePowerLimit),
 	}
@@ -268,11 +272,11 @@ func (e *LPC) AddFeatures() {
 	f.AddFunctionType(model.FunctionTypeElectricalConnectionCharacteristicListData, true, false)
 
 	if ec, err := server.NewElectricalConnection(e.LocalEntity); err == nil {
-		// ElectricalConnectionId and ParameterId should be identical to the ones used
-		// in a MPC Server role implementation, which is not done here (yet)
+		electricalConnectionId := internal.GetElectricalConnectionId(e.LocalEntity)
+		parameterId := internal.GetParameterIdForACPowerTotalMeasurement(e.LocalEntity, electricalConnectionId, measurementId)
 		newCharData := model.ElectricalConnectionCharacteristicDataType{
-			ElectricalConnectionId: util.Ptr(model.ElectricalConnectionIdType(0)),
-			ParameterId:            util.Ptr(model.ElectricalConnectionParameterIdType(0)),
+			ElectricalConnectionId: util.Ptr(electricalConnectionId),
+			ParameterId:            util.Ptr(parameterId),
 			CharacteristicContext:  util.Ptr(model.ElectricalConnectionCharacteristicContextTypeEntity),
 			CharacteristicType:     util.Ptr(e.characteristicType()),
 			Unit:                   util.Ptr(model.UnitOfMeasurementTypeW),

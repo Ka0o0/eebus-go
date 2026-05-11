@@ -172,7 +172,7 @@ func setupFeatures(
 	}
 	data.FeatureInformation = features
 
-	remoteEntities, err := remoteDevice.AddEntityAndFeatures(true, data)
+	remoteEntities, err := remoteDevice.AddEntityAndFeatures(true, data, nil)
 	assert.Nil(t, err)
 	assert.NotNil(t, remoteEntities)
 	assert.NotEqual(t, 0, len(remoteEntities))

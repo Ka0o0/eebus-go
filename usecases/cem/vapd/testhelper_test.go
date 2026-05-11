@@ -169,7 +169,7 @@ func setupDevices(
 		FeatureInformation: featureInformations,
 	}
 
-	entities, err := remoteDevice.AddEntityAndFeatures(true, detailedData)
+	entities, err := remoteDevice.AddEntityAndFeatures(true, detailedData, nil)
 	if err != nil {
 		fmt.Println(err)
 	}

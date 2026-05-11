@@ -209,7 +209,7 @@ func (s *CsLPPSuite) Test_multipleDeviceDiagServer() {
 		FeatureInformation: featureInformations,
 	}
 
-	_, err := s.remoteDevice.AddEntityAndFeatures(true, detailedData)
+	_, err := s.remoteDevice.AddEntityAndFeatures(true, detailedData, nil)
 	if err != nil {
 		fmt.Println(err)
 	}

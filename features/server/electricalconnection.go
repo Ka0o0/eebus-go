@@ -55,9 +55,9 @@ func (e *ElectricalConnection) AddDescription(
 	return nil
 }
 
-// Add a new parameter description data sett and return the parameterId
+// Add a new parameter description data set and return the parameterId
 //
-// NOTE: the electricalConnectionId has to be provided, parameterId may not be provided
+// NOTE: the electricalConnectionId has to be provided, parameterId shall not be provided
 //
 // will return nil if the data set could not be added
 func (e *ElectricalConnection) AddParameterDescription(

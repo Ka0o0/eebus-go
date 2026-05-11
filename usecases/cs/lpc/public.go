@@ -46,6 +46,10 @@ func (e *LPC) ConsumptionLimit() (limit ucapi.LoadLimit, resultErr error) {
 	if value.TimePeriod != nil && value.TimePeriod.EndTime != nil {
 		if duration, err := value.TimePeriod.GetDuration(); err == nil {
 			limit.Duration = duration
+			if limit.Duration == 0 {
+				// according to EEBus UC Implementation Guideline for LPC v1.0.0 section 2.2 item 1
+				limit.IsActive = false
+			}
 		}
 	}
 

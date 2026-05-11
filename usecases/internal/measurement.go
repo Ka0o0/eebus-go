@@ -5,9 +5,14 @@ import (
 
 	"github.com/enbility/eebus-go/api"
 	"github.com/enbility/eebus-go/features/client"
+	"github.com/enbility/eebus-go/features/server"
 	spineapi "github.com/enbility/spine-go/api"
 	"github.com/enbility/spine-go/model"
+	"github.com/enbility/spine-go/util"
 )
+
+// According to the LPC Installation Guide, this value is relatively high to make sure it doesn't conflict with other IDs on this entity
+var defaultPowerTotalMeasurementId = model.MeasurementIdType(50)
 
 // return the phase specific measurement data
 func MeasurementPhaseSpecificDataForFilter(
@@ -74,4 +79,30 @@ func MeasurementPhaseSpecificDataForFilter(
 	}
 
 	return result, nil
+}
+
+// GetPowerTotalMeasurementId returns the MeasurementId for the AC Power Total measurement
+func GetPowerTotalMeasurementId(localEntity spineapi.EntityLocalInterface) model.MeasurementIdType {
+	if localEntity == nil {
+		return defaultPowerTotalMeasurementId
+	}
+	measurementFeat := localEntity.FeatureOfTypeAndRole(model.FeatureTypeTypeMeasurement, model.RoleTypeServer)
+	if measurementFeat == nil {
+		return defaultPowerTotalMeasurementId
+	}
+	measurement, err := server.NewMeasurement(localEntity)
+	if err != nil || measurement == nil {
+		return defaultPowerTotalMeasurementId
+	}
+	MeasurementDescriptionData, err := measurement.GetDescriptionsForFilter(model.MeasurementDescriptionDataType{
+		MeasurementType: util.Ptr(model.MeasurementTypeTypePower),
+		CommodityType:   util.Ptr(model.CommodityTypeTypeElectricity),
+		Unit:            util.Ptr(model.UnitOfMeasurementTypeW),
+		ScopeType:       util.Ptr(model.ScopeTypeTypeACPowerTotal),
+	})
+	if err != nil || len(MeasurementDescriptionData) != 1 || MeasurementDescriptionData[0].MeasurementId == nil {
+		return defaultPowerTotalMeasurementId
+	}
+
+	return *MeasurementDescriptionData[0].MeasurementId
 }

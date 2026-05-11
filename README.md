@@ -5,6 +5,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/enbility/eebus-go/badge.svg?branch=dev)](https://coveralls.io/github/enbility/eebus-go?branch=dev)
 [![Go report](https://goreportcard.com/badge/github.com/enbility/eebus-go)](https://goreportcard.com/report/github.com/enbility/eebus-go)
 [![CodeFactor](https://www.codefactor.io/repository/github/enbility/eebus-go/badge)](https://www.codefactor.io/repository/github/enbility/eebus-go)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/enbility/eebus-go)
 
 This library provides a foundation for implementing [EEBUS](https://eebus.org) use cases in [go](https://golang.org). It uses the SHIP implementation [ship-go](https://github.com/enbility/ship-go) and the SPINE implementation [spine-go](https://github.com/enbility/spine-go). Both repositories started as part of this repository, before they were moved into their own separate repositories and go packages.
 
@@ -42,7 +43,7 @@ This includes example code for sending an LPC limit 5 seconds after connecting t
 #### First Run
 
 ```sh
-go run cmd/controlbox/main.go 4713
+go run examples/controlbox/main.go 4713
 ```
 
 `4713` is the example server port that this process should listen on
@@ -52,7 +53,7 @@ The certificate and key and the local SKI will be generated and printed. You sho
 #### General Usage
 
 ```sh
-Usage: go run cmd/controlbox/main.go <serverport> <remoteski> <certfile> <keyfile>
+Usage: go run examples/controlbox/main.go <serverport> <remoteski> <certfile> <keyfile>
 ```
 
 - `remoteski` is the SKI of the remote device or service you want to connect to
@@ -66,7 +67,7 @@ This includes example code for accepting LPC and LPP limits from a control box, 
 #### First Run
 
 ```sh
-go run cmd/hems/main.go 4714
+go run examples/hems/main.go 4714
 ```
 
 `4714` is the example server port that this process should listen on
@@ -76,7 +77,7 @@ The certificate and key and the local SKI will be generated and printed. You sho
 #### General Usage
 
 ```sh
-Usage: go run cmd/hems/main.go <serverport> <remoteski> <certfile> <keyfile>
+Usage: go run examples/hems/main.go <serverport> <remoteski> <certfile> <keyfile>
 ```
 
 - `remoteski` is the SKI of the remote device or service you want to connect to
@@ -90,7 +91,7 @@ This includes example code for accepting LPC from a control box.
 #### First Run
 
 ```sh
-go run cmd/hems/main.go 4715
+go run examples/hems/main.go 4715
 ```
 
 `4715` is the example server port that this process should listen on
@@ -100,7 +101,7 @@ The certificate and key and the local SKI will be generated and printed. You sho
 #### General Usage
 
 ```sh
-Usage: go run cmd/evse/main.go <serverport> <remoteski> <certfile> <keyfile>
+Usage: go run examples/evse/main.go <serverport> <remoteski> <certfile> <keyfile>
 ```
 
 - `remoteski` is the SKI of the remote device or service you want to connect to
