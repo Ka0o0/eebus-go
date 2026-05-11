@@ -40,10 +40,10 @@ func (e *OHPCF) ReadOptionalPowerConsumption(entity spineapi.EntityRemoteInterfa
 
 	powerSequence := data.Alternatives[0].PowerSequence[0]
 
-	if *powerSequence.State.State != spinemodel.PowerSequenceStateTypeInactive ||
-		!*powerSequence.State.SequenceRemoteControllable {
-		return nil, api.ErrMissingData
-	}
+	// if *powerSequence.State.State != spinemodel.PowerSequenceStateTypeInactive ||
+	// 	!*powerSequence.State.SequenceRemoteControllable {
+	// 	return nil, api.ErrMissingData
+	// }
 
 	activeDurationMin, err := powerSequence.OperatingConstraintsDuration.ActiveDurationMin.GetTimeDuration()
 	if err != nil {
@@ -91,18 +91,23 @@ func (e *OHPCF) ScheduleOptionalPowerConsumptionProcess(entity spineapi.EntityRe
 	// 	return err
 	// }
 	schedule := &model.PowerSequenceScheduleDataType{}
-	schedule.StartTime = model.NewAbsoluteOrRelativeTimeTypeFromTime(startTime)
+	// duration := time.Until(startTime)
+	schedule.StartTime = model.NewAbsoluteOrRelativeTimeType("PT0S")
 
 	sem2 := &spinemodel.SmartEnergyManagementPsDataType{
 		Alternatives: []spinemodel.SmartEnergyManagementPsAlternativesType{
-			{PowerSequence: []spinemodel.SmartEnergyManagementPsPowerSequenceType{
-				{
-					// Description: &spinemodel.PowerSequenceDescriptionDataType{
-					// 	SequenceId: util.Ptr[spinemodel.PowerSequenceIdType](0),
-					// },
-					Schedule: schedule,
-				},
-			}},
+			{
+				// Relation: &spinemodel.SmartEnergyManagementPsAlternativesRelationType{
+				// 	AlternativesId: util.Ptr[spinemodel.AlternativesIdType](0),
+				// },
+				PowerSequence: []spinemodel.SmartEnergyManagementPsPowerSequenceType{
+					{
+						Description: &spinemodel.PowerSequenceDescriptionDataType{
+							SequenceId: util.Ptr[spinemodel.PowerSequenceIdType](0),
+						},
+						Schedule: schedule,
+					},
+				}},
 		},
 	}
 
@@ -131,14 +136,33 @@ func (e *OHPCF) StopOptionalPowerConsumption(entity spineapi.EntityRemoteInterfa
 		return err
 	}
 
-	data, err := sem.GetData()
-	if err != nil || data == nil {
-		return err
+	// data, err := sem.GetData()
+	// if err != nil || data == nil {
+	// 	return err
+	// }
+
+	// data.Alternatives[0].PowerSequence[0].State.State = util.Ptr(model.PowerSequenceStateTypeInvalid)
+
+	sem2 := &spinemodel.SmartEnergyManagementPsDataType{
+		Alternatives: []spinemodel.SmartEnergyManagementPsAlternativesType{
+			{
+				// Relation: &spinemodel.SmartEnergyManagementPsAlternativesRelationType{
+				// 	AlternativesId: util.Ptr[spinemodel.AlternativesIdType](0),
+				// },
+				PowerSequence: []spinemodel.SmartEnergyManagementPsPowerSequenceType{
+					{
+						Description: &spinemodel.PowerSequenceDescriptionDataType{
+							SequenceId: util.Ptr[spinemodel.PowerSequenceIdType](0),
+						},
+						State: &spinemodel.PowerSequenceStateDataType{
+							State: util.Ptr(model.PowerSequenceStateTypeInvalid),
+						},
+					},
+				}},
+		},
 	}
 
-	data.Alternatives[0].PowerSequence[0].State.State = util.Ptr(model.PowerSequenceStateTypeInvalid)
-
-	_, err = sem.WriteData(data)
+	_, err = sem.WriteData(sem2)
 
 	return err
 }

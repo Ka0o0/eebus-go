@@ -50,11 +50,11 @@ func (l *SmartEnergyManagementPs) WriteData(data *model.SmartEnergyManagementPsD
 		Function: util.Ptr(model.FunctionTypeSmartEnergyManagementPsData),
 		Filter: []model.FilterType{
 			*model.NewFilterTypePartial(),
-			model.FilterType{SmartEnergyManagementPsDataSelectors: &model.SmartEnergyManagementPsDataSelectorsType{
-				PowerSequenceDescription: &model.PowerSequenceDescriptionListDataSelectorsType{
-					SequenceId: []model.PowerSequenceIdType{0},
-				},
-			}},
+			// model.FilterType{SmartEnergyManagementPsDataSelectors: &model.SmartEnergyManagementPsDataSelectorsType{
+			// 	PowerSequenceDescription: &model.PowerSequenceDescriptionListDataSelectorsType{
+			// 		SequenceId: []model.PowerSequenceIdType{0},
+			// 	},
+			// }},
 		},
 		SmartEnergyManagementPsData: data,
 	}
